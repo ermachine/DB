@@ -81,7 +81,7 @@
 
 **Пример**:   
 SQL скрипт:
-```postgresql
+```sql
 CREATE TABLE IF NOT EXISTS STUDENT (
     STUDENT_ID   INTEGER      PRIMARY KEY,
     STUDENT_NAME VARCHAR(128) NOT NULL,
@@ -351,7 +351,7 @@ WHERE day_dt >= valid_from_dttm
 
 3. Физическая схема
 
-```postgresql
+```sql
 CREATE TABLE IF NOT EXISTS phystech_school (
     phystech_school_name        VARCHAR(128)    PRIMARY KEY,
     manager_name                VARCHAR(128)    NOT NULL,
