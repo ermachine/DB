@@ -44,9 +44,9 @@
 * Связь изображается линией, которая соединяет две сущности, участвующие в отношении.
 * Множественность связи изображается в виде вилки.
 
-![](img_3.png)
+![](images/img_3.png)
 
-![](img_2.png)
+![](images/img_2.png)
 
 Выше показана связь сущностей Artist и Song: песня (Song) имеет «одного и только одного» исполнителя (Artist); исполнитель связан с «нулем, одной или несколькими» песнями.
 
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS STUDENT (
 * "**Только один**";
 * "**Ноль или один**".
 
-![](img_4.png)
+![](images/img_4.png)
 
 Каждая из них показывает, сколько значений из первой таблицы может находиться во второй таблице (это может быть непонятно при первом прочитывании; стоит вернуться после примера, рассмотренного далее). Тип связи определяется для обоих концов, то есть существует $\frac{4 \cdot 3}{2} + 4 = 10$ возможных связей ($\frac{4 \cdot 3}{2}$ связей с разными концами и 4 связи с одинаковыми концами).
 
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS STUDENT (
 
 Визуально эта связь реализуется так:
 
-![](hotel_example.png)
+![](images/hotel_example.png)
 
 **Важно понимать**, что в *PostgreSQL*, как и в некоторых других СУБД, реализовать связь много-ко-многим напрямую невозможно (или по крайней мере проблематично).
 
@@ -157,13 +157,13 @@ CREATE TABLE IF NOT EXISTS STUDENT (
 1. *Студент*
 2. *Учебный курс*
 
-![](student_course.png)
+![](images/student_course.png)
 
 Каждая из них реализована в виде одной таблицы, пусть studentId и courseId - соответственно первичные ключи в этих таблицах. В таблице "*Студент*", чтобы не нарушать структуру и форму первичного ключа, список курсов нужно хранить в виде списка. В таком случае не ясно, есть ли здесь вторичный ключ, и как джойнить эти таблицы.
 
 Для понятного указания СУБД, что есть первичный и вторичный ключ, courseId_list и studentId_list разворачивают в строки и помещают в отдельную, третью таблицу:
 
-![](student_course_upd.png)
+![](images/student_course_upd.png)
 
 Таким образом, все проблемы в реализации и неоднозначности решаются.
 
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS STUDENT (
 
 **Пример ER-диаграммы для логической модели**:
 
-![](img_5.png)
+![](images/img_5.png)
 
 ER-диаграммы можно рисовать в [gliffy](https://www.gliffy.com/) или [draw.io](https://app.diagrams.net/). Нужно создать новый документ и выбрать нужный тип диаграммы.
 
@@ -217,14 +217,14 @@ ER-диаграммы можно рисовать в [gliffy](https://www.gliffy
 1. *Первая нормальная форма (1NF)*:
     * Значения всех атрибутов отношения атомарны (все атрибуты простые, содержат только скалярные значения):
 
-![](img_nf1.png)
+![](images/img_nf1.png)
 
 2. *Вторая нормальная форма (2NF)*:
     * 1NF (атомарность атрибутов) + каждый неключевой атрибут функционально полностью зависит от потенциального ключа (1NF всегда можно привести к 2NF, и этот процесс обратим):
 
 Здесь автор слов и композитор зависят только от полей “Название группы” и “Название песни”, то есть от подмножества PK (от того, что песня включена в другой CD-диск, автор слов и композитор не изменятся)
 
-![](img_nf2.png)
+![](images/img_nf2.png)
 
 3. *Третья нормальная форма (3NF)*:
     * 2NF (атомарность атрибутов, минимальная функциональная зависимость от PK) + каждый неключевой атрибут нетранзитивно функционально зависит от первичного ключа (то есть каждое неключевое поле полностью и единственный образом определяется ключом, полным ключом и ни от чего более не зависит)
@@ -234,7 +234,7 @@ ER-диаграммы можно рисовать в [gliffy](https://www.gliffy
 * Отдел → Телефон
 * Сотрудник →Телефон
 
-![](img_nf3.png)
+![](images/img_nf3.png)
 
 Разбиваем таблицу так, чтобы избавиться от транзитивности: разносим атрибуты "Сотрудник" и "Телефон" по разным отношениям.
 
@@ -279,7 +279,7 @@ ER-диаграммы можно рисовать в [gliffy](https://www.gliffy
         * Требует добавление техничеких полей, что немного захламляет общую таблицу
         * В случае обращения только к актуальным данным придется фильтровать таблицу, что может быть очень долгим процессом
 
-![](img_scd2.png)
+![](images/img_scd2.png)
 
 Вместо `NULL` используется некоторая константа (для `valid_to — '9999-12-31'`), что позволяет писать простое условие:
 ```sql
@@ -300,7 +300,7 @@ WHERE day_dt >= valid_from_dttm
         * Ограниченная история
         * Требует добавления технического поля в общую таблицу
 
-![](img_scd3.png)
+![](images/img_scd3.png)
 
 * **SCD 4**: храним в основной таблице только актуальные данные и историю изменений в отдельной таблице. Основная таблица всегда перезаписывается текущими данными с перенесением старых данных в другую таблицу. Обычно этот тип используют для аудита изменений или создания архивных таблиц.
     * _Достоинства:_
@@ -311,7 +311,7 @@ WHERE day_dt >= valid_from_dttm
         * Разделение единой сущности на разные таблицы
         * Хранение часто меняющихся данных требует большой объем памяти
 
-![](img_scd4.png)
+![](images/img_scd4.png)
 
 **Важно понимать, что версионирование, как и нормальная форма, внутри базы данных может отличаться для разных таблиц. Выбирать их нужно исходя из нужд, доступных ресурсов и особенности хранимых данных.**
 
@@ -339,11 +339,11 @@ WHERE day_dt >= valid_from_dttm
 
 1. Концептуальная схема
 
-![](conceptual.png)
+![](images/conceptual.png)
 
 2. Логическая схема
 
-![](logical.png)
+![](images/logical.png)
 
 Здесь для employee применено версионирование SCD 4, для остального - SCD 1. По хорошему для других таблиц по возможности нужно сделать так же SCD 4 (например, для phsytech_school, student).
 
@@ -351,102 +351,16 @@ WHERE day_dt >= valid_from_dttm
 
 3. Физическая схема
 
-```sql
-CREATE TABLE IF NOT EXISTS phystech_school (
-    phystech_school_name        VARCHAR(128)    PRIMARY KEY,
-    manager_name                VARCHAR(128)    NOT NULL,
-    foundation_dt               VARCHAR(128)    NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS department (
-    department_name             VARCHAR(128)    PRIMARY KEY,
-    location_auditorium_id      VARCHAR(128)    NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS employee (
-    employee_name               VARCHAR(128)    PRIMARY KEY,
-    position                    VARCHAR(128)    NOT NULL,
-    birthday_dt                 DATE,
-    department_name             VARCHAR(128),
-    wikimipt_link_url           VARCHAR(128),
-    FOREIGN KEY (department_name) REFERENCES department(department_name)
-);
-
-CREATE TABLE IF NOT EXISTS employee_history (
-    id                          INT AUTO_INCREMENT PRIMARY KEY,
-    employee_name               VARCHAR(128)       NOT NULL,
-    position                    VARCHAR(128),
-    birthday_dt                 DATE,
-    department_name             VARCHAR(128),
-    wikimipt_link_url           VARCHAR(128),
-    date_from                   DATE NOT NULL,
-    date_to                     DATE,
-    FOREIGN KEY (employee_name) REFERENCES employee(employee_name),
-    FOREIGN KEY (department_name) REFERENCES department(department_name)
-);
-
-CREATE TABLE IF NOT EXISTS course (
-    course_id                   INT AUTO_INCREMENT PRIMARY KEY,
-    course_name                 VARCHAR(128)       NOT NULL,
-    department_name             VARCHAR(128),
-    FOREIGN KEY (department_name) REFERENCES department(department_name)
-);
-
-CREATE TABLE IF NOT EXISTS teacher_course (
-    teacher_name                VARCHAR(128),
-    course_id                   INT,
-    PRIMARY KEY (teacher_name, course_id),
-    FOREIGN KEY (teacher_name) REFERENCES employee(employee_name),
-    FOREIGN KEY (course_id) REFERENCES course(course_id)
-);
-
-CREATE TABLE IF NOT EXISTS student (
-    student_name                VARCHAR(128) PRIMARY KEY,
-    birthday_dt                 DATE,
-    group_id                    INT NULL,
-    department_name             VARCHAR(128),
-    admission_dt                DATE,
-    average_mark                DECIMAL(3,2),
-    -- будем считать в данной моделе балл фиксированным
-    scholarship                 DECIMAL(8,2),
-    fee                         DECIMAL(8,2),
-    FOREIGN KEY (department_name) REFERENCES department(department_name)
-);
-
-CREATE TABLE IF NOT EXISTS group (
-    group_id                    INT AUTO_INCREMENT PRIMARY KEY,
-    phystech_school             VARCHAR(128)       NOT NULL,
-    head_student_name           VARCHAR(128)       NOT NULL,
-    group_size                  INT                NOT NULL,
-    FOREIGN KEY (phystech_school) REFERENCES phystech_school(phystech_school_name),
-    FOREIGN KEY (head_student_name) REFERENCES student(student_name)
-);
-
-CREATE TABLE IF NOT EXISTS auditorium (
-    auditorium_id       INT AUTO_INCREMENT PRIMARY KEY,
-    building_number     VARCHAR(128),
-    auditorium_size     INT  -- большая, средняя или маленькая
-);
-
-CREATE TABLE IF NOT EXISTS schedule (
-    id                  INT AUTO_INCREMENT PRIMARY KEY,
-    start_dt            DATE               NOT NULL,
-    end_dt              DATE               NOT NULL,
-    teacher_name        VARCHAR(128)       NOT NULL,
-    default_group_id    INT                NOT NULL,
-    auditorium_id       INT                NOT NULL,
-    FOREIGN KEY (teacher_name) REFERENCES employee(employee_name),
-    FOREIGN KEY (default_group_id) REFERENCES group(group_id),
-    FOREIGN KEY (auditorium_id) REFERENCES auditorium(auditorium_id)
-);
-```
+Создание и заполнение таблиц - в `ddl.sql`.
 
 Написать самостоятельно следующие запросы:
 
 1. Посчитать количество студентов, которые изучают курс "Базы данных"
 
-2. Вывести старост групп, которые изучают хотя бы один курс, который ведет "Иванов Александр Максимович"
+2. Вывести старост групп, которые изучают хотя бы один курс, который ведет "Павлов Марат Манасович"
 
-3. Вывести список аудиторий, в которых в понедельник проходит курс "Теория вероятностей" (обратить внимание, что один курс может читаться разными кафедрами, поэтому *course_name* не может быть первичным ключом).
+3. Вывести список аудиторий, в которых в понедельник проходит курс "Теория вероятности" (обратить внимание, что один курс может читаться разными кафедрами, поэтому *course_name* не может быть первичным ключом).
 
 4. Вывести количество преподавателей, которые меняли свою кафедру.
+
+Решения - в `dml.sql`.
